@@ -34,24 +34,42 @@ function showSection(sectionId) {
       const data = await response.json();
       return data.tracks.items;
     }
-    function displaySearchResults(tracks) {
-      const resultsContainer = document.getElementById('results');
-      if (tracks.length === 0) {
-        resultsContainer.innerHTML = '<p>No results found</p>';
-        return;
-      }
-      tracks.forEach(track => {
-        const trackCard = document.createElement('div');
-        trackCard.classList.add('artist-card');
-        trackCard.innerHTML = `
-          <img src="${track.album.images[0].url}" alt="${track.name}">
-          <h3>${track.name}</h3>
-          <p>${track.artists.map(artist => artist.name).join(', ')}</p>
-          <button onclick="playSong('${track.preview_url}')">Play Preview</button>
-        `;
-        resultsContainer.appendChild(trackCard);
-      });
-    }
+    // Menampilkan hasil pencarian dengan desain baru
+function displaySearchResults(tracks) {
+  const resultsContainer = document.getElementById('results');
+  resultsContainer.innerHTML = '';
+
+  tracks.forEach(track => {
+    const trackCard = document.createElement('div');
+    trackCard.classList.add('track-card');
+    trackCard.innerHTML = `
+      <div class="favorite-btn" onclick="toggleFavorite(this)">❤️</div>
+      <img src="${track.img}" alt="${track.title}">
+      <div class="track-info">
+        <h3 class="track-title">${track.title}</h3>
+        <p class="track-artist">${track.artist} · ${track.genre} · ${track.duration}</p>
+      </div>
+      <div class="waveform">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+      </div>
+      <button class="play-btn" onclick="playSong('${track.title}', '${track.artist}', '${track.img}')">▶ Play</button>
+    `;
+    resultsContainer.appendChild(trackCard);
+  });
+}
+
+// Toggle tombol favorit
+function toggleFavorite(element) {
+  element.classList.toggle('active');
+  if (element.classList.contains('active')) {
+    element.innerHTML = "💖";
+  } else {
+    element.innerHTML = "❤️";
+  }
+}
     function playSong(previewUrl) {
       const audio = new Audio(previewUrl);
       audio.play();
